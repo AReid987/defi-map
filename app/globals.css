@@ -1,0 +1,22 @@
+/* Shared base only. Each route brings its own theming via its CSS module. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+}
