@@ -78,6 +78,45 @@ const QUIZ: { text: string; correct: boolean }[] = [
   { text: "The price stays fixed until an oracle updates it", correct: false },
 ];
 
+interface NewsPara {
+  lead?: string;
+  text: string;
+}
+
+interface NewsItem {
+  date: string;
+  headline: string;
+  body: NewsPara[];
+  sources: string;
+}
+
+const NEWS: NewsItem[] = [
+  {
+    date: "OCT 4, 2026",
+    headline: "SHIB landed on Solana. Pools formed in minutes.",
+    body: [
+      {
+        lead: "What happened.",
+        text: "Shiba Inu went live on Solana through Sunrise at 16:05 UTC on October 4 — a canonical token under Wormhole's NTT standard, not a wrapped copy.",
+      },
+      {
+        lead: "Twenty-two minutes later.",
+        text: "3,005 trades, about $300,000 moved, roughly $514,000 sitting in pools. Nine venues — Jupiter, Raydium, Phantom, Kamino and more — had it tradable within minutes of the announcement.",
+      },
+      {
+        lead: "Why it belongs here.",
+        text: "This is the first section happening live: new inventory arrives, both sides of fresh pools fill, and price discovery starts from the first block. A pool doesn't need permission to exist — it needs two assets and a reason.",
+      },
+      {
+        lead: "The caveat.",
+        text: "Launch-day snapshots are not sustained demand; the figures cover roughly the first half hour. The lesson stands either way: liquidity forms where attention goes.",
+      },
+    ],
+    sources:
+      "Sources: Altcoin Buzz / Solana Compass, Oct 4, 2026; BeInCrypto via CryptoRank, Oct 5, 2026. Early figures only; no later liquidity data in these reports.",
+  },
+];
+
 function compactNumber(value: number, digits: number): string {
   if (Math.abs(value) >= 1000000) return (value / 1000000).toFixed(digits) + "M";
   if (Math.abs(value) >= 1000) return (value / 1000).toFixed(digits) + "K";
@@ -95,6 +134,7 @@ export default function LiquidityPoolsPage() {
   const [amount, setAmount] = useState<number>(5);
   const [deposit, setDeposit] = useState<number>(10);
   const [picked, setPicked] = useState<number | null>(null);
+  const [openNews, setOpenNews] = useState<number[]>([]);
   const [openLesson, setOpenLesson] = useState<number | null>(null);
   const [isChanging, setIsChanging] = useState<boolean>(false);
   const [detail, setDetail] = useState<DetailData>({
@@ -467,6 +507,59 @@ export default function LiquidityPoolsPage() {
               {feedback}
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className={styles["thisweek"]} aria-labelledby="thisweek-title">
+        <div className={styles["section-intro"]}>
+          <div className={styles["section-no"]}>04 / THIS WEEK</div>
+          <div>
+            <h2 id="thisweek-title">Watch a pool be born.</h2>
+            <p>A listing, minute by minute. Tap the date for the deeper layer.</p>
+          </div>
+        </div>
+        <div>
+          {NEWS.map((item, i) => {
+            const open = openNews.includes(i);
+            return (
+              <article key={item.date} className={styles["news-item"]}>
+                <button
+                  type="button"
+                  className={styles["news-btn"]}
+                  aria-expanded={open}
+                  onClick={() =>
+                    setOpenNews((prev) =>
+                      prev.includes(i)
+                        ? prev.filter((x) => x !== i)
+                        : [...prev, i],
+                    )
+                  }
+                >
+                  <span className={styles["news-date"]}>{item.date}</span>
+                  <span className={styles["news-headline"]}>
+                    {item.headline}
+                  </span>
+                  <span className={styles["news-plus"]} aria-hidden="true">
+                    {open ? "−" : "+"}
+                  </span>
+                </button>
+                {open && (
+                  <div className={styles["news-body"]}>
+                    <span aria-hidden="true" />
+                    <div>
+                      {item.body.map((para, j) => (
+                        <p key={j}>
+                          {para.lead ? <strong>{para.lead} </strong> : null}
+                          {para.text}
+                        </p>
+                      ))}
+                      <p className={styles["news-src"]}>{item.sources}</p>
+                    </div>
+                  </div>
+                )}
+              </article>
+            );
+          })}
         </div>
       </section>
 
