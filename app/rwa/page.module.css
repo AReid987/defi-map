@@ -163,6 +163,17 @@
 .dialog-rule{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;margin-top:26px;padding:17px;border-radius:14px;background:var(--paper2)}
 .dialog-rule b{font:700 1rem "Azeret Mono",monospace;color:var(--red)}
 .dialog-rule span{font-weight:800}
+.thisweek{margin-top:82px;padding-top:26px;border-top:1px solid var(--line)}
+.news-item{border-top:1px solid var(--line)}
+.news-item:last-child{border-bottom:1px solid var(--line)}
+.news-btn{display:grid;grid-template-columns:180px 1fr 48px;gap:36px;align-items:baseline;width:100%;padding:28px 0;text-align:left;background:none;border:0;color:inherit;cursor:pointer;font:inherit}
+.news-date{font:700 .78rem "Azeret Mono",monospace;color:var(--red);white-space:nowrap}
+.news-headline{font-size:clamp(1.7rem,3.2vw,2.6rem);font-weight:800;letter-spacing:-.04em;line-height:1.05}
+.news-plus{font-size:1.8rem;line-height:1;color:var(--muted);text-align:right}
+.news-body{display:grid;grid-template-columns:180px 1fr;gap:36px;padding:4px 0 34px}
+.news-body p{margin:0 0 16px;max-width:760px;color:var(--muted);font-size:1.08rem;line-height:1.65}
+.news-body p strong{color:var(--ink)}
+.news-src{font-size:.82rem}
 @media(max-width:880px){
   .page{width:min(100% - 28px,720px);padding-top:28px}
   .hero{grid-template-columns:1fr;min-height:auto;gap:42px;padding-bottom:72px}
@@ -175,6 +186,10 @@
   .stress,.check-grid{grid-template-columns:1fr}
   .takeaway{grid-template-columns:1fr;gap:12px}
   .fine{margin-left:0}
+  .news-btn{grid-template-columns:1fr 48px;gap:10px}
+  .news-date{grid-column:1/-1}
+  .news-body{grid-template-columns:1fr}
+  .news-body>span{display:none}
 }
 @media(max-width:540px){
   .page{width:min(100% - 18px,500px);padding-bottom:58px}

@@ -85,6 +85,45 @@ const CHOICES: { text: string; correct: boolean }[] = [
   { text: "The token cannot fall further because it has cash flow", correct: false },
 ];
 
+interface NewsPara {
+  lead?: string;
+  text: string;
+}
+
+interface NewsItem {
+  date: string;
+  headline: string;
+  body: NewsPara[];
+  sources: string;
+}
+
+const NEWS: NewsItem[] = [
+  {
+    date: "OCT 5, 2026",
+    headline: "The corporate sink is still filling — slower.",
+    body: [
+      {
+        lead: "What happened.",
+        text: "DeFi Development Corp, the Nasdaq-listed company stacking SOL as its treasury asset, added 26,203 SOL — about $3 million — in the week ending October 2. Total: roughly 2.56 million SOL, valued near $302 million.",
+      },
+      {
+        lead: "The pace is the story.",
+        text: "101,381 SOL the week ending September 18, then 47,706, then 26,203. The sink is still open, but the inflow has roughly quartered in three weeks.",
+      },
+      {
+        lead: "Why it belongs here.",
+        text: "Sinks have rates, not just states. A buyer soaking up float at full speed props up the bid; the same buyer at quarter speed is a different market force. When a faucet-and-sink reader sees a treasury buyer, the next question is always: at what rate, and for how long?",
+      },
+      {
+        lead: "The other side.",
+        text: "The company frames it as an 11% treasury gain since August 12 and runs its own validators to compound the stack. Both can be true: the pile is bigger than in August, and the weekly additions are shrinking.",
+      },
+    ],
+    sources:
+      "Sources: Decrypt, Oct 5, 2026 (company 8-K filing); FXCrypto24, Oct 6, 2026. Holdings and pace as disclosed; \u201cSOL equivalents\u201d left undefined in the filing.",
+  },
+];
+
 function moneyK(n: number, dec?: number): string {
   return (n < 0 ? "−$" : "$") + Math.abs(n).toFixed(dec ?? 0) + "K";
 }
@@ -107,6 +146,7 @@ export default function SinksAndFaucetsPage() {
   const [openCards, setOpenCards] = useState<DetailKey[]>([]);
   const [openQuestions, setOpenQuestions] = useState<boolean[]>([false, false, false, false]);
   const [picked, setPicked] = useState<number | null>(null);
+  const [openNews, setOpenNews] = useState<number[]>([]);
   const dialogRef = useRef<HTMLDialogElement | null>(null);
 
   useEffect(() => {
@@ -569,6 +609,62 @@ export default function SinksAndFaucetsPage() {
               {feedback}
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className={styles.thisweek} aria-labelledby="thisweek-title">
+        <div className={styles["section-head"]}>
+          <div className={styles["section-no"]}>05 / THIS WEEK</div>
+          <div>
+            <h2 id="thisweek-title">A sink, with a pulse.</h2>
+            <p>
+              One real flow, measured weekly. Tap the date for the deeper
+              layer.
+            </p>
+          </div>
+        </div>
+        <div>
+          {NEWS.map((item, i) => {
+            const open = openNews.includes(i);
+            return (
+              <article key={item.date} className={styles["news-item"]}>
+                <button
+                  type="button"
+                  className={styles["news-btn"]}
+                  aria-expanded={open}
+                  onClick={() =>
+                    setOpenNews((prev) =>
+                      prev.includes(i)
+                        ? prev.filter((x) => x !== i)
+                        : [...prev, i],
+                    )
+                  }
+                >
+                  <span className={styles["news-date"]}>{item.date}</span>
+                  <span className={styles["news-headline"]}>
+                    {item.headline}
+                  </span>
+                  <span className={styles["news-plus"]} aria-hidden="true">
+                    {open ? "−" : "+"}
+                  </span>
+                </button>
+                {open && (
+                  <div className={styles["news-body"]}>
+                    <span aria-hidden="true" />
+                    <div>
+                      {item.body.map((para, j) => (
+                        <p key={j}>
+                          {para.lead ? <strong>{para.lead} </strong> : null}
+                          {para.text}
+                        </p>
+                      ))}
+                      <p className={styles["news-src"]}>{item.sources}</p>
+                    </div>
+                  </div>
+                )}
+              </article>
+            );
+          })}
         </div>
       </section>
 

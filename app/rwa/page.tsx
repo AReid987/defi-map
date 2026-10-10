@@ -145,6 +145,69 @@ const quizChoices: QuizChoice[] = [
   { label: "Yes—every RWA token can redeem instantly", answer: "wrong" },
 ];
 
+interface NewsPara {
+  lead?: string;
+  text: string;
+}
+
+interface NewsItem {
+  date: string;
+  headline: string;
+  body: NewsPara[];
+  sources: string;
+}
+
+const NEWS: NewsItem[] = [
+  {
+    date: "OCT 9, 2026",
+    headline: "Twelve stocks became Solana tokens.",
+    body: [
+      {
+        lead: "What happened.",
+        text: "Securitize launched Securitize Stocks: twelve US equities — Apple, Microsoft, Nvidia, Alphabet, Tesla, Meta, Amazon, Netflix, Circle, SpaceX, Strategy, and Palantir — as tokens on Solana. Trades settle in USDC.",
+      },
+      {
+        lead: "What the token is.",
+        text: "Each token is a Convertible Entitlement Token, backed 1:1 by a real share held at a regulated brokerage. The pitch: a token that is a stock, not a bet on one.",
+      },
+      {
+        lead: "What the holder actually owns.",
+        text: "The economic life of the share — dividends, voting rights where the share class carries them, and other corporate actions. What the holder does not automatically get: a seat on the company's shareholder register. Holders are entitlement holders; converting the token is what puts a name on the register. The twelve issuers have not endorsed the product.",
+      },
+      {
+        lead: "How it reaches buyers.",
+        text: "Sold through Securitize Markets, a registered broker-dealer, to eligible US and EU investors after identity checks. Trading starts in extended hours on Securitize's Solana venue with Jump Trading supplying liquidity; the NYSE's planned 24/7 venue and OKXICE are next, pending approvals.",
+      },
+    ],
+    sources:
+      "Sources: CoinDesk, Oct 8, 2026; Crypto Daily, Oct 9, 2026; FinanceFeeds, Oct 9, 2026. Figures as reported; not independently audited.",
+  },
+  {
+    date: "OCT 6, 2026",
+    headline: "Settlement got its own standard.",
+    body: [
+      {
+        lead: "What happened.",
+        text: "The Solana Foundation released Solana DvP: an open-source, MIT-licensed program that settles the asset leg and the payment leg of a trade in a single atomic transaction. Both move together, or neither moves.",
+      },
+      {
+        lead: "The bank's role.",
+        text: "J.P. Morgan contributed its settlement playbook — deadlines, escrow isolation, the token controls regulated issuers require — but did not design, operate, or endorse the program. A bank teaching a public chain what compliance officers will sign, not a bank running a private ledger.",
+      },
+      {
+        lead: "Why it matters here.",
+        text: "Tokenized stocks are only as trustworthy as their settlement. DvP is the plumbing that lets a tokenized share behave like a share when it changes hands — the redemption link, enforced by code instead of paperwork.",
+      },
+      {
+        lead: "State of play.",
+        text: "The code passed a Cantina audit, with four medium-severity findings fixed before launch. No live institutional volume has been reported yet.",
+      },
+    ],
+    sources:
+      "Sources: crypto.news, Oct 6, 2026; TradingView (Coinpedia), Oct 6, 2026. Finality claims are the Foundation's; no independent volume data published.",
+  },
+];
+
 function fillStyle(pct: number): CSSProperties {
   return {
     width: pct + "%",
@@ -162,6 +225,7 @@ export default function RwaPage() {
   const [openCards, setOpenCards] = useState<number[]>([]);
   const [picked, setPicked] = useState<number | null>(null);
   const [detailKey, setDetailKey] = useState<DetailKey | null>(null);
+  const [openNews, setOpenNews] = useState<number[]>([0]);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -593,6 +657,64 @@ export default function RwaPage() {
               {feedback}
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className={styles["thisweek"]} aria-labelledby="thisweek-title">
+        <div className={styles["section-head"]}>
+          <div className={styles["section-no"]}>05 / THIS WEEK</div>
+          <div>
+            <h2 id="thisweek-title">October, on the record.</h2>
+            <p>
+              Two real developments, translated into this lesson&apos;s
+              three links. Tap a date for the deeper layer.
+            </p>
+          </div>
+        </div>
+        <div>
+          {NEWS.map((item, i) => {
+            const open = openNews.includes(i);
+            return (
+              <article key={item.date} className={styles["news-item"]}>
+                <button
+                  type="button"
+                  className={styles["news-btn"]}
+                  aria-expanded={open}
+                  onClick={() =>
+                    setOpenNews((prev) =>
+                      prev.includes(i)
+                        ? prev.filter((x) => x !== i)
+                        : [...prev, i],
+                    )
+                  }
+                >
+                  <span className={styles["news-date"]}>{item.date}</span>
+                  <span className={styles["news-headline"]}>
+                    {item.headline}
+                  </span>
+                  <span className={styles["news-plus"]} aria-hidden="true">
+                    {open ? "−" : "+"}
+                  </span>
+                </button>
+                {open && (
+                  <div className={styles["news-body"]}>
+                    <span aria-hidden="true" />
+                    <div>
+                      {item.body.map((para, j) => (
+                        <p key={j}>
+                          {para.lead ? (
+                            <strong>{para.lead} </strong>
+                          ) : null}
+                          {para.text}
+                        </p>
+                      ))}
+                      <p className={styles["news-src"]}>{item.sources}</p>
+                    </div>
+                  </div>
+                )}
+              </article>
+            );
+          })}
         </div>
       </section>
 
